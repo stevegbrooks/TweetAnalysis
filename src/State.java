@@ -30,24 +30,10 @@ public class State {
 	}
 
 	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * @return the lat
 	 */
 	public double getLat() {
 		return lat;
-	}
-
-	/**
-	 * @param lat the lat to set
-	 */
-	public void setLat(double lat) {
-		this.lat = lat;
 	}
 
 	/**
@@ -56,14 +42,11 @@ public class State {
 	public double getLng() {
 		return lng;
 	}
-
-	/**
-	 * @param lng the lng to set
-	 */
-	public void setLng(double lng) {
-		this.lng = lng;
-	}
 	
-
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(name);	
+		return sb.toString();		
+	}
 
 }

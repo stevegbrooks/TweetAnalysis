@@ -49,24 +49,14 @@ public class Tweet {
 	public double getLat() {
 		return lat;
 	}
-	/**
-	 * @param lat the lat to set
-	 */
-	public void setLat(double lat) {
-		this.lat = lat;
-	}
+
 	/**
 	 * @return the lng
 	 */
 	public double getLng() {
 		return lng;
 	}
-	/**
-	 * @param lng the lng to set
-	 */
-	public void setLng(double lng) {
-		this.lng = lng;
-	}
+
 	/**
 	 * @return the state
 	 */
@@ -85,12 +75,7 @@ public class Tweet {
 	public Date getDate() {
 		return date;
 	}
-	/**
-	 * @param date the date to set
-	 */
-	public void setDate(Date date) {
-		this.date = date;
-	}
+
 	/**
 	 * @return the contents
 	 */
@@ -104,6 +89,17 @@ public class Tweet {
 		this.contents = contents;
 	}
 	
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(lat + ", ");
+		sb.append(lng + " | ");
+		sb.append(date + " | ");
+		sb.append(contents + "\n");
+		sb.append(state);
+	
+		return sb.toString();
+		
+	}
 
 
 }
