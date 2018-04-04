@@ -1,5 +1,16 @@
 import java.util.ArrayList;
-
+/**
+ * The StateReader class takes in a file name and produces an ArrayList of State objects.
+ * There are assumptions about the formatting of the file:
+ * 
+ * 1. No column headers
+ * 2. State name in first column
+ * 3. Latitude in second column
+ * 4. Longitude in third column
+ * 
+ * @author sgb
+ *
+ */
 public class StateReader {
 	private FileReader fileReader;
 	private ArrayList<State> states;

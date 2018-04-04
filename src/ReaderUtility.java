@@ -1,10 +1,10 @@
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
- * This class provides support functions for the StationReader
- * and the BikeTripReader classes. Helps with parsing data.
+ * This class provides helper functions for other Reader classes. 
+ * Generally helps with parsing data.
+ * 
  * @author sgb
- *
  */
 public class ReaderUtility {
 

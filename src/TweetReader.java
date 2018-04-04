@@ -4,11 +4,24 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
+/**
+ * The TweetReader class takes in a file name and returns a HashSet of 
+ * Tweet objects. There are assumptions made about the contents of the file:
+ * 
+ * 1. It is a .txt file without any column names or front matter
+ * 2. The dates are formatted as "YYYY-MM-DD" (dash-delimited).
+ * 3. Each tweet starts with a bracketed lat/long pair (eg '[39.02, -42.01]')
+ * 4. The text-contents of the tweet start after the time the tweet was sent (eg '23:01:01 #tweetingIsFun I love twitter!')
+ * 
+ * @author sgb
+ *
+ */
 public class TweetReader {
 	private HashSet<Tweet> tweets;
 	private FileReader fileReader;
 	private ReaderUtility utils;
+	private Date minDate;
+	private Date maxDate;
 	
 	public TweetReader(String file) {
 		fileReader = new FileReader(file);
@@ -16,6 +29,12 @@ public class TweetReader {
 		utils = new ReaderUtility();
 		tweets = new HashSet<Tweet>();
 		ArrayList<Tweet> tweetsTemp = new ArrayList<>();
+		
+		Calendar cal = Calendar.getInstance();
+		cal.set(9999, 1, 1);
+		minDate = cal.getTime();
+		cal.set(1, 1, 1);
+		maxDate = cal.getTime();
 		
 		for (int i = 0; i < rawData.size(); i++) {
 			//create vars for Tweet
@@ -41,9 +60,11 @@ public class TweetReader {
 				String dateString = utils.parseDate(lineArray[1]);
 				String[] dateParts = dateString.split("-");
 				int[] dateArray = utils.convertToIntArray(dateParts);
-				Calendar cal = Calendar.getInstance();
+				//create a Date object
 				cal.set(dateArray[0], dateArray[1] - 1, dateArray[2], 0, 0, 0);
 				date = cal.getTime();
+				if (date.compareTo(minDate) < 0) { minDate = date; }
+				if (date.compareTo(maxDate) > 0) { maxDate = date; }
 				//get contents
 				String[] contentsArray = lineArray[1].split("[0-9]*\\:[0-9]*\\:[0-9]*");
 				contents = contentsArray[1].trim();
@@ -69,6 +90,20 @@ public class TweetReader {
 	 */
 	public HashSet<Tweet> getTweets() {
 		return tweets;
+	}
+
+	/**
+	 * @return the minDate
+	 */
+	public Date getMinDate() {
+		return minDate;
+	}
+
+	/**
+	 * @return the maxDate
+	 */
+	public Date getMaxDate() {
+		return maxDate;
 	}
 	
 	
