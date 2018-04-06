@@ -63,8 +63,8 @@ public class TweetReader {
 				//create a Date object
 				cal.set(dateArray[0], dateArray[1] - 1, dateArray[2], 0, 0, 0);
 				date = cal.getTime();
-				if (date.compareTo(minDate) < 0) { minDate = date; }
-				if (date.compareTo(maxDate) > 0) { maxDate = date; }
+				if (date.before(minDate)) { minDate = date; }
+				if (date.after(maxDate)) { maxDate = date; }
 				//get contents
 				String[] contentsArray = lineArray[1].split("[0-9]*\\:[0-9]*\\:[0-9]*");
 				contents = contentsArray[1].trim();

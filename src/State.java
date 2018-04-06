@@ -43,10 +43,15 @@ public class State {
 		return lng;
 	}
 	
+	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append(name);	
 		return sb.toString();		
+	}
+	
+	public boolean equals(State state) {
+		return this.name.equalsIgnoreCase(state.getName());
 	}
 
 }

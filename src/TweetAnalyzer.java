@@ -20,7 +20,7 @@ public class TweetAnalyzer {
 	private HashSet<Tweet> tweets;
 	private ArrayList<State> states;
 	private ReaderUtility utils;
-	
+
 	public TweetAnalyzer(String tweetFileName, String stateFileName) {
 		tweetReader = new TweetReader(tweetFileName);
 		stateReader = new StateReader(stateFileName);
@@ -41,7 +41,7 @@ public class TweetAnalyzer {
 		if (!date.matches("[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}")) {
 			throw new IllegalArgumentException("Error: use the correct format (YYYY-MM-DD).");
 		}
-		
+
 		String dateString = utils.parseDate(date);
 		String[] dateParts = dateString.split("-");
 		int[] dateArray = utils.convertToIntArray(dateParts);
@@ -59,9 +59,12 @@ public class TweetAnalyzer {
 					+ minDate.toLocaleString() + " to " + maxDate.toLocaleString() 
 					+ ". " + "\n" + "Please enter a date in this range or 'q' to exit:");
 		}
-		
+		maxDate.setHours(0);
+		maxDate.setMinutes(0);
+		maxDate.setSeconds(0);
+
 		HashMap<State, Integer> hashMap = new HashMap<>();
-		
+
 		for (Tweet tweet : tweets) {
 			double lat = tweet.getLat();
 			double lng = tweet.getLng();
@@ -69,9 +72,9 @@ public class TweetAnalyzer {
 			if (lat > 0 && lng < 0) { //northern hemisphere and western hemisphere only
 				String tweetDate = tweet.getDate().toString();
 				if (tweetDate.equals(inputDate.toString())) {
-					
+
 					assignClosestState(tweet);
-					
+
 					if (hashMap.containsKey(tweet.getState())) {
 						hashMap.put(tweet.getState(), 
 								hashMap.get(tweet.getState()) + 1);
@@ -97,20 +100,65 @@ public class TweetAnalyzer {
 		double tweetLng = tweet.getLng();
 		double shortest = Long.MAX_VALUE;
 		State closestState = null;
-		
+
 		for (State state : states) {
 			double stateLat = state.getLat();
 			double stateLng = state.getLng();
 			double x = tweetLat - stateLat;
 			double y = tweetLng - stateLng;
-			
+
 			double hypotenuse = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-			
+
 			if (hypotenuse < shortest) {
 				shortest = hypotenuse;
 				closestState = state;
 			}
 		}
 		tweet.setState(closestState);
+	}
+
+	/**
+	 * This method returns a HashMap with dates (YYYY-MM-DD) as keys, and the amount
+	 * of tweets on that date as values. The user supplies one of the 51 states (incl. DC),
+	 * and the HashMap is returned showing the amount of tweets on each day for that state in the supplied
+	 * tweet data.
+	 */
+
+	public HashMap<Date, Integer> countNumOfTweetsByDate(String inputStateName) {
+		//input error checking #1
+		if (!inputStateName.matches("[a-zA-Z\\s]*")) {
+			throw new IllegalArgumentException("Error: enter a valid state (YYYY-MM-DD).");
+		}
+		//Check that its a state in the state list
+		State input = null;
+		for (State state : states) {
+			if (state.getName().equalsIgnoreCase(inputStateName)) {
+				input = state;
+				break;
+			}
+		}
+		//input error checking #2
+		if (input == null) { throw new IllegalArgumentException("Error: enter a valid state (YYYY-MM-DD)."); }
+		//Assemble the HashMap:
+		//first assign each tweet to a state, then if it matches the input
+		//add it to the hashmap and keep track of tweet count
+		HashMap<Date, Integer> hashMap = new HashMap<>();
+		for (Tweet tweet : tweets) {
+			double lat = tweet.getLat();
+			double lng = tweet.getLng();
+			if (lat > 0 && lng < 0) { 
+				assignClosestState(tweet);
+				State tweetState = tweet.getState();
+				if (tweetState.equals(input)) {
+					if (hashMap.containsKey(tweet.getDate())) {
+						hashMap.put(tweet.getDate(), 
+								hashMap.get(tweet.getDate()) + 1);
+					} else { 
+						hashMap.put(tweet.getDate(), 1); 
+					}
+				}
+			}
+		}
+		return hashMap;
 	}
 }
