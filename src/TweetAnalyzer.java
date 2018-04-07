@@ -1,8 +1,10 @@
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.TreeMap;
 /**
  * The TweetAnalyzer class is where all the magic happens. It requires file names be provided
  * for the tweet file and the state file, and then pulls together those two data sets for analysis.
@@ -39,7 +41,7 @@ public class TweetAnalyzer {
 	public HashMap<State, Integer> countNumOfTweetsByState(String date) {
 		//input error checking #1
 		if (!date.matches("[0-9]{4}\\-[0-9]{2}\\-[0-9]{2}")) {
-			throw new IllegalArgumentException("Error: use the correct format (YYYY-MM-DD).");
+			throw new IllegalArgumentException("Error: invalid date format. Must be in the form 'YYYY-MM-DD'.");
 		}
 
 		String dateString = utils.parseDate(date);
@@ -48,20 +50,23 @@ public class TweetAnalyzer {
 		Calendar cal = Calendar.getInstance();
 		cal.set(dateArray[0], dateArray[1] - 1, dateArray[2], 0, 0, 0);
 		Date inputDate = cal.getTime();
-		Date minDate = tweetReader.getMinDate();
-		Date maxDate = tweetReader.getMaxDate();
+		//Date minDate = tweetReader.getMinDate();
+		//Date maxDate = tweetReader.getMaxDate();
+		cal.setTime(tweetReader.getMinDate());
+		Date minDate = cal.getTime();
+		cal.setTime(tweetReader.getMaxDate());
+		Date maxDate = cal.getTime();
 		maxDate.setHours(23);
 		maxDate.setMinutes(59);
 		maxDate.setSeconds(59);
+		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+		String minDateString = formatter.format(minDate);
+		String maxDateString = formatter.format(maxDate);
 		//input error checking #2
 		if (inputDate.before(minDate) || inputDate.after(maxDate)) {
 			throw new IllegalArgumentException("Error: the data only covers " 
-					+ minDate.toLocaleString() + " to " + maxDate.toLocaleString() 
-					+ ". " + "\n" + "Please enter a date in this range or 'q' to exit:");
+					+ minDateString + " to " + maxDateString + ".");
 		}
-		maxDate.setHours(0);
-		maxDate.setMinutes(0);
-		maxDate.setSeconds(0);
 
 		HashMap<State, Integer> hashMap = new HashMap<>();
 
@@ -124,10 +129,10 @@ public class TweetAnalyzer {
 	 * tweet data.
 	 */
 
-	public HashMap<Date, Integer> countNumOfTweetsByDate(String inputStateName) {
+	public TreeMap<String, Integer> countNumOfTweetsByDate(String inputStateName) {
 		//input error checking #1
 		if (!inputStateName.matches("[a-zA-Z\\s]*")) {
-			throw new IllegalArgumentException("Error: enter a valid state (YYYY-MM-DD).");
+			throw new IllegalArgumentException("Error: invalid state name.");
 		}
 		//Check that its a state in the state list
 		State input = null;
@@ -138,27 +143,32 @@ public class TweetAnalyzer {
 			}
 		}
 		//input error checking #2
-		if (input == null) { throw new IllegalArgumentException("Error: enter a valid state (YYYY-MM-DD)."); }
+		if (input == null) { throw new IllegalArgumentException("Error: invalid state name."); }
 		//Assemble the HashMap:
 		//first assign each tweet to a state, then if it matches the input
 		//add it to the hashmap and keep track of tweet count
-		HashMap<Date, Integer> hashMap = new HashMap<>();
+		TreeMap<String, Integer> treeMap = new TreeMap<>();
 		for (Tweet tweet : tweets) {
+			Date tweetDate = tweet.getDate();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+			String date = formatter.format(tweetDate);
+			
 			double lat = tweet.getLat();
 			double lng = tweet.getLng();
+			
 			if (lat > 0 && lng < 0) { 
 				assignClosestState(tweet);
 				State tweetState = tweet.getState();
 				if (tweetState.equals(input)) {
-					if (hashMap.containsKey(tweet.getDate())) {
-						hashMap.put(tweet.getDate(), 
-								hashMap.get(tweet.getDate()) + 1);
+					if (treeMap.containsKey(date)) {
+						treeMap.put(date, 
+								treeMap.get(date) + 1);
 					} else { 
-						hashMap.put(tweet.getDate(), 1); 
+						treeMap.put(date, 1); 
 					}
 				}
 			}
 		}
-		return hashMap;
+		return treeMap;
 	}
 }

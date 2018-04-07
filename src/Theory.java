@@ -1,6 +1,7 @@
 import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 
 public class Theory {
@@ -19,10 +20,10 @@ public class Theory {
 		System.out.println("End Option 1" + Instant.now());
 		
 		System.out.println("Start Option 2" + Instant.now());
-		HashMap<Date, Integer> hashMap2 = tweetAnalyzer.countNumOfTweetsByDate("Ohio");
-		for (Date key : hashMap2.keySet()) {
+		TreeMap<String, Integer> treeMap = tweetAnalyzer.countNumOfTweetsByDate("Ohio");
+		for (String key : treeMap.keySet()) {
 			System.out.print(key + " = ");
-			System.out.println(hashMap2.get(key));
+			System.out.println(treeMap.get(key));
 		}
 		System.out.println("End Option 2" + Instant.now());
 		

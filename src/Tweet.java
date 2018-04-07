@@ -1,3 +1,4 @@
+import java.text.SimpleDateFormat;
 import java.util.Date;
 /**
  * This is a POJO to represent a tweet. It has attributes of location (lat/long and State), the date
