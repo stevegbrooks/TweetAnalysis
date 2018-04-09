@@ -125,8 +125,8 @@ public class TweetAnalyzer {
 	/**
 	 * This method returns a HashMap with dates (YYYY-MM-DD) as keys, and the amount
 	 * of tweets on that date as values. The user supplies one of the 51 states (incl. DC),
-	 * and the HashMap is returned showing the amount of tweets on each day for that state in the supplied
-	 * tweet data.
+	 * and the HashMap is returned showing the amount of tweets on each day for that state 
+	 * in the supplied tweet data.
 	 */
 
 	public TreeMap<String, Integer> countNumOfTweetsByDate(String inputStateName) {
