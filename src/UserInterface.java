@@ -8,12 +8,19 @@ import java.util.TreeMap;
  */
 public class UserInterface {
 	
+	/**
+	 * prints the menu of options
+	 */
 	public static void printMenu() {
 		System.out.println("Enter '1' to look at the count of tweets by state on a given date.");
 		System.out.println("Enter '2' to look at the count of tweets by date in a given state.");
 		System.out.println("Enter 'q' to exit.");
 	}
-	
+	/**
+	 * runs option 1 - the countNumOfTweetsByState() method of TweetAnalyzer
+	 * @param tweetAnalyzer a TweetAnalyzer object
+	 * @param in a Scanner object for keyboard input
+	 */
 	public static void menuOption1(TweetAnalyzer tweetAnalyzer, Scanner in) {
 		HashMap<State, Integer> output = new HashMap<>();
 		while (true) {
@@ -37,7 +44,11 @@ public class UserInterface {
 			}
 		}
 	}
-	
+	/**
+	 * runs option 2 - the countNumOfTweetsByDate() method of TweetAnalyzer
+	 * @param tweetAnalyzer a TweetAnalyzer object
+	 * @param in a Scanner object for keyboard input
+	 */
 	public static void menuOption2(TweetAnalyzer tweetAnalyzer, Scanner in) {
 		TreeMap<String, Integer> output = new TreeMap<>();
 		while (true) {
