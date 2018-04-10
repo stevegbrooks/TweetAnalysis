@@ -50,24 +50,26 @@ public class TweetAnalyzer {
 		Calendar cal = Calendar.getInstance();
 		cal.set(dateArray[0], dateArray[1] - 1, dateArray[2], 0, 0, 0);
 		Date inputDate = cal.getTime();
-		//Date minDate = tweetReader.getMinDate();
-		//Date maxDate = tweetReader.getMaxDate();
+		
 		cal.setTime(tweetReader.getMinDate());
-		Date minDate = cal.getTime();
+		Date minDate = (Date) cal.getTime().clone();
 		cal.setTime(tweetReader.getMaxDate());
-		Date maxDate = cal.getTime();
+		Date maxDate = (Date) cal.getTime().clone();
+		
 		maxDate.setHours(23);
 		maxDate.setMinutes(59);
 		maxDate.setSeconds(59);
+		
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		String minDateString = formatter.format(minDate);
 		String maxDateString = formatter.format(maxDate);
+		
 		//input error checking #2
 		if (inputDate.before(minDate) || inputDate.after(maxDate)) {
 			throw new IllegalArgumentException("Error: the data only covers " 
 					+ minDateString + " to " + maxDateString + ".");
 		}
-
+	
 		HashMap<State, Integer> hashMap = new HashMap<>();
 
 		for (Tweet tweet : tweets) {
@@ -134,6 +136,7 @@ public class TweetAnalyzer {
 		if (!inputStateName.matches("[a-zA-Z\\s]*")) {
 			throw new IllegalArgumentException("Error: invalid state name.");
 		}
+		
 		//Check that its a state in the state list
 		State input = null;
 		for (State state : states) {
@@ -142,8 +145,10 @@ public class TweetAnalyzer {
 				break;
 			}
 		}
+		
 		//input error checking #2
-		if (input == null) { throw new IllegalArgumentException("Error: invalid state name."); }
+		if (input == null) throw new IllegalArgumentException("Error: invalid state name.");
+		
 		//Assemble the HashMap:
 		//first assign each tweet to a state, then if it matches the input
 		//add it to the hashmap and keep track of tweet count
